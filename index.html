@@ -27,9 +27,8 @@ html, body {
     align-items: center;
 }
 
-/* WRAPPER PARA IMAGEN + TARJETA */
+/* WRAPPER */
 .card-wrapper {
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -80,6 +79,35 @@ h1 {
     opacity: 0.85;
 }
 
+/* CONTROLES DE AUDIO */
+.audio-controls {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#play-btn {
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: none;
+    background: rgba(255,255,255,0.18);
+    color: white;
+    font-size: 0.95em;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+}
+
+#play-btn:hover {
+    background: rgba(255,255,255,0.28);
+}
+
+#volume-slider {
+    width: 140px;
+    cursor: pointer;
+}
+
 /* RESPONSIVE */
 @media (max-width: 500px) {
     .card {
@@ -106,7 +134,6 @@ h1 {
 
 <div class="container">
     <div class="card-wrapper">
-        <!-- CAMBIA EL NOMBRE SI TU IMAGEN ES .JPG -->
         <img src="perrito.jpg" alt="Perrito cumpleaños" class="pet-img">
 
         <div class="card">
@@ -114,16 +141,33 @@ h1 {
             <div id="countdown">Cargando…</div>
             <div class="date">11 de febrero de 2026</div>
         </div>
+
+        <!-- CONTROLES DE MÚSICA -->
+        <div class="audio-controls">
+            <button id="play-btn">🎵 Reproducir música</button>
+            <input
+                type="range"
+                id="volume-slider"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.7"
+            >
+        </div>
     </div>
 </div>
 
+<audio id="bg-music" loop>
+    <source src="aymigatito.mp3" type="audio/mpeg">
+</audio>
+
 <script>
+/* CONTADOR */
 const targetDate = new Date("2026-02-11T00:00:00-05:00").getTime();
 
 function updateCountdown() {
     const now = new Date().getTime();
     const diff = targetDate - now;
-
     const countdown = document.getElementById("countdown");
 
     if (diff <= 0) {
@@ -142,6 +186,30 @@ function updateCountdown() {
 
 setInterval(updateCountdown, 1000);
 updateCountdown();
+
+/* MÚSICA */
+const music = document.getElementById("bg-music");
+const playBtn = document.getElementById("play-btn");
+const volumeSlider = document.getElementById("volume-slider");
+
+let isPlaying = false;
+music.volume = volumeSlider.value;
+
+playBtn.addEventListener("click", () => {
+    if (!isPlaying) {
+        music.play();
+        playBtn.textContent = "⏸️ Pausar música";
+        isPlaying = true;
+    } else {
+        music.pause();
+        playBtn.textContent = "🎵 Reproducir música";
+        isPlaying = false;
+    }
+});
+
+volumeSlider.addEventListener("input", () => {
+    music.volume = volumeSlider.value;
+});
 </script>
 
 </body>
